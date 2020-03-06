@@ -1,51 +1,82 @@
 package com.jhipsterl.web.rest;
 
 import com.jhipsterl.domain.Snippet;
-import com.jhipsterl.domain.User;
 import com.jhipsterl.repository.SnippetRepository;
-import com.jhipsterl.repository.UserRepository;
 import com.jhipsterl.service.SnippetService;
 import com.jhipsterl.service.dto.SnippetDTO;
-import com.jhipsterl.service.dto.UserDTO;
 import com.jhipsterl.service.mapper.SnippetMapper;
+import com.jhipsterl.web.rest.errors.BadRequestAlertException;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class SnippetResource {
+
+    private final SnippetService snippetService;
+
     private final SnippetRepository snippetRepository;
 
-    //private final UserRepository userRepository;
-
-    public SnippetResource(SnippetRepository snippetRepository) {
-        //this.userRepository = userRepository;
+    public SnippetResource(SnippetService snippetService, SnippetRepository snippetRepository) {
+        this.snippetService = snippetService;
         this.snippetRepository = snippetRepository;
     }
 
-    @GetMapping("/snippets")
-    public ResponseEntity<String> getAllUsers() {
+    @GetMapping("/snippetsH")
+    public ResponseEntity<String> getHello() {
         return new ResponseEntity<>("hello", HttpStatus.OK);
-//        final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
-//        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-//        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    @GetMapping("/snippetsA")
+    @GetMapping("/snippets")
     public ResponseEntity<List<SnippetDTO>> getAllSnippets() {
-        //List<User> users = this.userRepository.findAll();
-
         List<Snippet> allSnippets = this.snippetRepository.findAll();
-        //HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        final ResponseEntity<List<SnippetDTO>> tResponseEntity = new ResponseEntity<List<SnippetDTO>>( new SnippetMapper().snippetsToSnippetDTOs(allSnippets), HttpStatus.OK);
-        return tResponseEntity;
-        //return ResponseUtil.wrapOrNotFound(this.snippetService.getAllSnippets());
+        return new ResponseEntity<>(new SnippetMapper().snippetsToSnippetDTOs(allSnippets), HttpStatus.OK);
+    }
+
+    @GetMapping("/snippets/{id}")
+    public ResponseEntity<SnippetDTO> getSnippetById(@PathVariable Long id) {
+        Optional<Snippet> snippetById = this.snippetRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(snippetById.map(SnippetDTO::new));
+    }
+
+    @GetMapping("/snippets/user/{id}")
+    public ResponseEntity<List<SnippetDTO>> getSnippetByUserId(@PathVariable Long id) {
+        List<Snippet> snippetsById = this.snippetRepository.findByUserId(id);
+        return new ResponseEntity<>(new SnippetMapper().snippetsToSnippetDTOs(snippetsById), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/snippets/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        snippetService.deleteSnippet(id);
+    }
+
+    @PostMapping("/snippets")
+    public ResponseEntity<Snippet> createSnippet(@Valid @RequestBody SnippetDTO snippetDTO) throws URISyntaxException {
+        if (snippetDTO.getId() != null) {
+            throw new BadRequestAlertException("A new snippet cannot already have an ID", "", "");
+        } else if (snippetDTO.getUserId() == null) {
+            throw new BadRequestAlertException("user id is require", "", "");
+        } else {
+            Snippet newSnippet = snippetService.createSnippet(snippetDTO);
+            return new ResponseEntity<Snippet>(newSnippet, HttpStatus.OK);
+        }
+    }
+
+    @PutMapping("/snippets")
+    public ResponseEntity<Snippet> updateSnippet(@Valid @RequestBody SnippetDTO snippetDTO) throws URISyntaxException {
+        if (snippetDTO.getId() == null) {
+            throw new BadRequestAlertException("id require", "", "");
+        } else {
+            Snippet newSnippet = snippetService.updateSnippet(snippetDTO);
+            return new ResponseEntity<Snippet>(newSnippet, HttpStatus.OK);
+        }
     }
 }
 

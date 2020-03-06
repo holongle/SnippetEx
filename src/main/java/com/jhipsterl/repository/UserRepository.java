@@ -18,6 +18,7 @@ import java.time.Instant;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findOneByFirstName(String activationKey);
 
     Optional<User> findOneByActivationKey(String activationKey);
 

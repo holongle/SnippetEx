@@ -23,7 +23,7 @@ public class Snippet implements Serializable {
     private String content;
 
     @Column(name = "user_id")
-    private Long user_id;
+    private Long userId;
 
     public Long getId() {
         return id;
@@ -58,11 +58,11 @@ public class Snippet implements Serializable {
     }
 
     public Long getUserId() {
-        return user_id;
+        return userId;
     }
 
     public void setUserId(Long userId) {
-        this.user_id = userId;
+        this.userId = userId;
     }
 
     @Override
