@@ -21,6 +21,7 @@ export class MainsnippetComponent implements OnInit, OnDestroy {
 
   constructor(
     private loginService: LoginService,
+    private router: Router,
     private accountService: AccountService, private loginModalService: LoginModalService) {}
 
   ngOnInit(): void {
@@ -33,6 +34,12 @@ export class MainsnippetComponent implements OnInit, OnDestroy {
 
   login(): void {
     this.loginModalService.open();
+  }
+
+  logout(): void {
+    //this.collapseNavbar();
+    this.loginService.logout();
+    this.router.navigate(['/snippet']);
   }
 
   ngOnDestroy(): void {
