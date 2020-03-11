@@ -67,7 +67,7 @@ public class Snippet implements Serializable {
 
     @Override
     public int hashCode() {
-        return 31;
+        return 31 + id.hashCode();
     }
 
     @Override
@@ -76,6 +76,11 @@ public class Snippet implements Serializable {
             "id=" + getId() +
             ", title='" + getTitle() + "'" +
             "}";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return (this == obj);
     }
 }
 
