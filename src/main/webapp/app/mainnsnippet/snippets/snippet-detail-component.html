@@ -1,4 +1,32 @@
-<h3>detail</h3>
+<div *ngIf="snippet">
+    <div class="row justify-content-sm-between">
+        <h3>{{snippet.title}}</h3>
+        <div>
+            <a type="submit"
+               [routerLink]="['/snippet/user', snippet.id,'view']"
+               queryParamsHandling="merge"
+               class="btn btn-primary btn-sm">
+                <fa-icon icon="eye"></fa-icon>
+                <span class="d-none d-md-inline">View</span>
+            </a>
+            &nbsp;
+            <a type="submit"
+               [routerLink]="['/snippet/user', snippet.id,'edit']"
+               queryParamsHandling="merge"
+               class="btn btn-primary btn-sm">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span class="d-none d-md-inline">Edit</span>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        {{snippet.description}}
+    </div>
+
+    <div class="row">
+        <textarea  class="text-content" >{{snippet.content}}</textarea>
+    </div>
+</div>
 <!--                    <button type="submit"-->
 <!--                            [routerLink]="['./', user.login, 'edit']"-->
 <!--                            queryParamsHandling="merge"-->

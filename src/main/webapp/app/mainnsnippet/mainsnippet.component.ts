@@ -1,15 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
 
-import { LoginModalService } from 'app/core/login/login-modal.service';
-import { AccountService } from 'app/core/auth/account.service';
-import { Account } from 'app/core/user/account.model';
-import { Router } from '@angular/router';
-
-import { VERSION } from 'app/app.constants';
-import { LoginService } from 'app/core/login/login.service';
-import { ProfileService } from 'app/layouts/profiles/profile.service';
-import {SnippetsComponent} from "app/mainnsnippet/snippets/snippets.component";
+import {LoginModalService} from 'app/core/login/login-modal.service';
+import {AccountService} from 'app/core/auth/account.service';
+import {Account} from 'app/core/user/account.model';
+import {Router} from '@angular/router';
+import {LoginService} from 'app/core/login/login.service';
 
 @Component({
   selector: 'jhi-main-snippet',
@@ -23,10 +19,17 @@ export class MainsnippetComponent implements OnInit, OnDestroy {
   constructor(
     private loginService: LoginService,
     private router: Router,
-    private accountService: AccountService, private loginModalService: LoginModalService) {}
+    private accountService: AccountService, private loginModalService: LoginModalService) {
+  }
 
   ngOnInit(): void {
     this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
   }
 
   isAuthenticated(): boolean {
@@ -44,9 +47,5 @@ export class MainsnippetComponent implements OnInit, OnDestroy {
     this.router.navigate(['/snippet']);
   }
 
-  ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
-  }
+
 }

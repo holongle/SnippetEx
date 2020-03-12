@@ -5,18 +5,22 @@ import {UserService} from "app/core/user/user.service";
 import {Account} from "app/core/user/account.model";
 import {Subscription} from "rxjs";
 import {AccountService} from "app/core/auth/account.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'jhi-snippet-detail',
-  templateUrl: './snippet-detail-component.html'
+  templateUrl: './snippet-detail-component.html',
+  styleUrls: ['snippet-detail.scss']
 })
 export class SnippetDetailComponent implements OnInit, OnDestroy {
   public snippets: Snippet[] | null = null;
   account: Account | null = null;
   authSubscription?: Subscription;
+  snippetId!: string;
+  snippet: Snippet | null = null;
 
 
-  constructor(private snippetService: SnippetService, private userService: UserService, private accountService: AccountService,) {
+  constructor(private route: ActivatedRoute, private snippetService: SnippetService, private userService: UserService, private accountService: AccountService,) {
   }
 
   ngOnDestroy(): void {
@@ -26,19 +30,21 @@ export class SnippetDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      this.findAllSnippet(params['id']);
+    });
     this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
-    this.findAllSnippet();
   }
 
   trackIdentity(index: number, item: Snippet): any {
     return item.id;
   }
 
-  public findAllSnippet(): void {
+  public findAllSnippet(id: string): void {
     this.snippetService
-      .getAllByUserId((this.account ? this.account.id.toString() : ''))
+      .getById(id)
       .subscribe((res) => {
-        this.snippets = res;
+        this.snippet = res;
       });
   }
 }

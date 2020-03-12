@@ -3,8 +3,8 @@
         <tbody *ngIf="snippets">
         <tr *ngFor="let snippet of snippets; trackBy: trackIdentity">
             <!--            <td><a [routerLink]="['./', user.login, 'view']">{{ user.id }}</a></td>-->
-            <td><a [routerLink]="['/snippet/user', snippet.id]">{{ snippet.id }}
-                .{{ snippet.title }} <br> {{snippet.description}}
+            <td><a [routerLink]="['/snippet/user', snippet.id]">{{ snippet.id }}. {{ snippet.title }}
+                <br> {{snippet.description}}
             </a></td>
             <!--            <td>{{ user.email }}</td>-->
             <!--            <td>-->

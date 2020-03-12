@@ -12,6 +12,10 @@ export class SnippetService {
   constructor(private http: HttpClient) {
   }
 
+  getById(id: string): Observable<ISnippet> {
+    return this.http.get<ISnippet>(this.snippetAPIUrl + '/' + id);
+  }
+
   getAll(): Observable<ISnippet[]> {
     return this.http.get<ISnippet[]>(this.snippetAPIUrl);
   }
