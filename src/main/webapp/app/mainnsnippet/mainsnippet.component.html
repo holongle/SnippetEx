@@ -4,8 +4,8 @@
         <span class="kmslogo-img"></span>
         <span class="navbar-title">Snippet</span>
     </div>
-    <div *ngIf="isAuthenticated()" class="col-md-9">
-        <span If="account">{{account.login}}</span>
+    <div *ngIf="isAuthenticated()" class="col-md-9 text-md-right">
+        <span If="account" >{{account.login}}</span>
         <span If="account">Avatar here</span>
         <a (click)="logout()" id="logout">
             <fa-icon icon="sign-out-alt" fixedWidth="true"></fa-icon>
@@ -15,27 +15,22 @@
 </div>
 <div class="row">
     <div class="col-md-3">
-        list of snippet
+        <jhi-snippets *ngIf="isAuthenticated()"></jhi-snippets>
     </div>
     <div class="col-md-9">
-        this is conte
         <h1 class="display-4">Welcome, Snippet!</h1>
 
         <p class="lead">This is your homepage</p>
 
         <div [ngSwitch]="isAuthenticated()">
-
+            <div class="alert alert-warning" *ngSwitchCase="true">
+                <jhi-snippet-detail> </jhi-snippet-detail>
+            </div>
             <div class="alert alert-warning" *ngSwitchCase="false">
                 <span>If you want to </span>
                 <a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
             </div>
 
-<!--            <div class="alert alert-warning" *ngSwitchCase="false">-->
-<!--                <span>You don't have an account yet?</span>&nbsp;-->
-<!--                <a class="alert-link" routerLink="/account/register">Register a new account</a>-->
-<!--            </div>-->
         </div>
-
-
     </div>
 </div>

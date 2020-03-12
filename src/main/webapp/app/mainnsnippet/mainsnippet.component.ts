@@ -9,9 +9,10 @@ import { Router } from '@angular/router';
 import { VERSION } from 'app/app.constants';
 import { LoginService } from 'app/core/login/login.service';
 import { ProfileService } from 'app/layouts/profiles/profile.service';
+import {SnippetsComponent} from "app/mainnsnippet/snippets/snippets.component";
 
 @Component({
-  selector: 'jhi-home',
+  selector: 'jhi-main-snippet',
   templateUrl: './mainsnippet.component.html',
   styleUrls: ['mainsnippet.scss']
 })
@@ -37,6 +38,7 @@ export class MainsnippetComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
+    //this.snippetsComponent.snippets = null;
     //this.collapseNavbar();
     this.loginService.logout();
     this.router.navigate(['/snippet']);
