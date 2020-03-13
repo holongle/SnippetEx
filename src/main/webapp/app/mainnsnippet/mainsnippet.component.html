@@ -5,7 +5,7 @@
         <span class="navbar-title">Snippet</span>
     </div>
     <div *ngIf="isAuthenticated()" class="col-md-9 text-md-right">
-        <span If="account" >{{account.login}}</span>
+        <span If="account">{{account.login}}</span>
         <span If="account">Avatar here</span>
         <a (click)="logout()" id="logout">
             <fa-icon icon="sign-out-alt" fixedWidth="true"></fa-icon>
@@ -15,12 +15,12 @@
 </div>
 <div class="row">
     <div class="col-md-3">
-        <jhi-snippets *ngIf="isAuthenticated()"></jhi-snippets>
+        <jhi-snippets [account]="this.account" *ngIf="isAuthenticated()"></jhi-snippets>
     </div>
     <div class="col-md-9">
         <div [ngSwitch]="isAuthenticated()">
             <div class="alert alert-warning" *ngSwitchCase="true">
-                <jhi-snippet-detail> </jhi-snippet-detail>
+                <jhi-snippet-detail [account]="this.account"></jhi-snippet-detail>
             </div>
             <div class="alert alert-warning" *ngSwitchCase="false">
                 <h1 class="display-4">Welcome, Snippet!</h1>

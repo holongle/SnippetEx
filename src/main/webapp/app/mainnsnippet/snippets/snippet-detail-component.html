@@ -1,11 +1,13 @@
-<div *ngIf="snippet">
-    <div class="row justify-content-sm-between">
+<div *ngIf="snippet && snippet.id !=null">
+    <div class="row justify-content-between">
         <h3>{{snippet.title}}</h3>
         <div>
             <a type="submit"
                [routerLink]="['/snippet/user', snippet.id,'view']"
                queryParamsHandling="merge"
-               class="btn btn-primary btn-sm">
+               [class.btn-primary]="mode=='view'"
+               [class.btn-secondary]="mode!='view'"
+               class="btn btn-secondary btn-sm">
                 <fa-icon icon="eye"></fa-icon>
                 <span class="d-none d-md-inline">View</span>
             </a>
@@ -13,30 +15,60 @@
             <a type="submit"
                [routerLink]="['/snippet/user', snippet.id,'edit']"
                queryParamsHandling="merge"
-               class="btn btn-primary btn-sm">
+               [class.btn-primary]="mode=='edit'"
+               [class.btn-secondary]="mode!='edit'"
+               class="btn  btn-sm">
                 <fa-icon icon="pencil-alt"></fa-icon>
                 <span class="d-none d-md-inline">Edit</span>
             </a>
         </div>
     </div>
-    <div class="row">
-        {{snippet.description}}
-    </div>
-
-    <div class="row">
-        <textarea  class="text-content" >{{snippet.content}}</textarea>
+    <div *ngIf="mode=='view'">
+        <div class="row">
+            {{snippet.description}}
+        </div>
+        <div class="row">
+            {{snippet.content}}
+        </div>
     </div>
 </div>
-<!--                    <button type="submit"-->
-<!--                            [routerLink]="['./', user.login, 'edit']"-->
-<!--                            queryParamsHandling="merge"-->
-<!--                            class="btn btn-primary btn-sm">-->
-<!--                        <fa-icon icon="pencil-alt"></fa-icon>-->
-<!--                        <span class="d-none d-md-inline">Edit</span>-->
-<!--                    </button>-->
+<form name="editForm" *ngIf="mode=='edit' || mode =='new'" role="form" novalidate (ngSubmit)="save()"
+      [formGroup]="editForm">
+    <div class="row" [hidden]="this.route.routeConfig.path!='new'">
+        <h2>Create new Snippet</h2>
+    </div>
+    <div class="row">
+        <label class="form-control-label">Title</label>
+        <input type="text" class="form-control" name="title"
+               formControlName="title">
+    </div>
+    <div class="row">
+        <label class="form-control-label">Description</label>
+        <textarea type="text" class="form-control" name="description"
+                  formControlName="description"></textarea>
+    </div>
 
-<!--                    <button type="button" (click)="deleteUser(user)"-->
-<!--                            class="btn btn-danger btn-sm" [disabled]="!currentAccount || currentAccount.login === user.login">-->
-<!--                        <fa-icon icon="times"></fa-icon>-->
-<!--                        <span class="d-none d-md-inline">Delete</span>-->
-<!--                    </button>-->
+    <div class="row">
+        <label class="form-control-label">Content</label>
+        <textarea class="text-content" name="content"
+                  formControlName="content"></textarea>
+    </div>
+    <div class="row">
+        &nbsp;
+    </div>
+    <div class="row justify-content-start">
+        <button type="submit"
+                class="btn btn-primary btn-sm">
+            <fa-icon icon="pencil-alt"></fa-icon>
+            <span class="d-none d-md-inline">Save</span>
+        </button>
+        &nbsp;
+        <button type="button" (click)="delete()" [hidden]="mode =='new'"
+                class="btn btn-primary btn-sm">
+            <span class="glyphicon glyphicon-remove">Delete</span>
+        </button>
+    </div>
+</form>
+
+
+

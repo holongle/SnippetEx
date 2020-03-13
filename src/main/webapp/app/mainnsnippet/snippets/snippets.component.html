@@ -1,48 +1,19 @@
-<div class="table-responsive" *ngIf="snippets">
+<div class="table-responsive" *ngIf="this.snippetService.snippetsStore">
     <table class="table table-striped" aria-describedby="user-management-page-heading">
-        <tbody *ngIf="snippets">
-        <tr *ngFor="let snippet of snippets; trackBy: trackIdentity">
-            <!--            <td><a [routerLink]="['./', user.login, 'view']">{{ user.id }}</a></td>-->
-            <td><a [routerLink]="['/snippet/user', snippet.id]">{{ snippet.id }}. {{ snippet.title }}
+        <tbody>
+        <tr *ngFor="let snippet of this.snippetService.snippetsStore; trackBy: trackIdentity">
+            <td><a [routerLink]="['/snippet/user', snippet.id, 'view']">{{ snippet.id }}. {{ snippet.title }}
                 <br> {{snippet.description}}
             </a></td>
-            <!--            <td>{{ user.email }}</td>-->
-            <!--            <td>-->
-            <!--                <div *ngFor="let authority of user.authorities">-->
-            <!--                    <span class="badge badge-info">{{ authority }}</span>-->
-            <!--                </div>-->
-            <!--            </td>-->
-            <!--            <td>{{ user.createdDate | date:'dd/MM/yy HH:mm' }}</td>-->
-            <!--            <td>{{ user.lastModifiedBy }}</td>-->
-            <!--            <td>{{ user.lastModifiedDate | date:'dd/MM/yy HH:mm' }}</td>-->
-            <!--            <td class="text-right">-->
-            <!--                <div class="btn-group">-->
-            <!--                    <button type="submit"-->
-            <!--                            [routerLink]="['./', user.login, 'view']"-->
-            <!--                            class="btn btn-info btn-sm">-->
-            <!--                        <fa-icon icon="eye"></fa-icon>-->
-            <!--                        <span class="d-none d-md-inline">View</span>-->
-            <!--                    </button>-->
-
-            <!--                    <button type="submit"-->
-            <!--                            [routerLink]="['./', user.login, 'edit']"-->
-            <!--                            queryParamsHandling="merge"-->
-            <!--                            class="btn btn-primary btn-sm">-->
-            <!--                        <fa-icon icon="pencil-alt"></fa-icon>-->
-            <!--                        <span class="d-none d-md-inline">Edit</span>-->
-            <!--                    </button>-->
-
-            <!--                    <button type="button" (click)="deleteUser(user)"-->
-            <!--                            class="btn btn-danger btn-sm" [disabled]="!currentAccount || currentAccount.login === user.login">-->
-            <!--                        <fa-icon icon="times"></fa-icon>-->
-            <!--                        <span class="d-none d-md-inline">Delete</span>-->
-            <!--                    </button>-->
-            <!--                </div>-->
-            <!--            </td>-->
         </tr>
         </tbody>
     </table>
-    <h1>have</h1>
 </div>
 
-<h1>hi3</h1>
+<button type="submit"
+        [hidden]="this.route.routeConfig.path=='new'"
+        class="btn btn-primary btn-sm"
+        [routerLink]="['/snippet/new']">
+    <fa-icon icon="pencil-alt"></fa-icon>
+    <span class="d-none d-md-inline">Create new snippet</span>
+</button>

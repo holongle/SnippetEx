@@ -1,9 +1,6 @@
-import {ActivatedRouteSnapshot, Resolve, Route} from '@angular/router';
+import {Route} from '@angular/router';
 
 import {MainsnippetComponent} from './mainsnippet.component';
-import {IUser, User} from "app/core/user/user.model";
-import {UserService} from "app/core/user/user.service";
-import {Observable, of} from "rxjs";
 
 export const MAINSNIPPET_ROUTE: Route = {
   path: '',
@@ -23,16 +20,20 @@ export const CHILD_SNIPPET_ROUTE: Route = {
   }
 };
 
-export class UserManagementResolve implements Resolve<IUser> {
-  constructor(private service: UserService) {
+export const CHILD_UPDATE_SNIPPET_ROUTE: Route = {
+  path: 'user/:id/:mode',
+  component: MainsnippetComponent,
+  data: {
+    authorities: [],
+    pageTitle: 'Snippet'
   }
+};
 
-  resolve(route: ActivatedRouteSnapshot): Observable<IUser> {
-    const id = route.params['login'];
-    if (id) {
-      return this.service.find(id);
-    }
-    return of(new User());
+export const CHILD_CREATE_SNIPPET_ROUTE: Route = {
+  path: 'new',
+  component: MainsnippetComponent,
+  data: {
+    authorities: [],
+    pageTitle: 'Create Snippet!'
   }
-}
-
+};

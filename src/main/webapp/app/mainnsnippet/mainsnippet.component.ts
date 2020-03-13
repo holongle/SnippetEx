@@ -41,8 +41,6 @@ export class MainsnippetComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    //this.snippetsComponent.snippets = null;
-    //this.collapseNavbar();
     this.loginService.logout();
     this.router.navigate(['/snippet']);
   }

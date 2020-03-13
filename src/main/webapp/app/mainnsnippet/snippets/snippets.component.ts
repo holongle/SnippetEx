@@ -1,10 +1,8 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {Snippet} from "app/mainnsnippet/model/snippet.model";
 import {SnippetService} from "app/mainnsnippet/service/snippet.service";
-import {UserService} from "app/core/user/user.service";
 import {Account} from "app/core/user/account.model";
-import {Subscription} from "rxjs";
-import {AccountService} from "app/core/auth/account.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'jhi-snippets',
@@ -12,33 +10,20 @@ import {AccountService} from "app/core/auth/account.service";
 })
 export class SnippetsComponent implements OnInit, OnDestroy {
   public snippets: Snippet[] | null = null;
-  account: Account | null = null;
-  authSubscription?: Subscription;
+  @Input() account: Account | null = null;
 
 
-  constructor(private snippetService: SnippetService, private userService: UserService, private accountService: AccountService,) {
+  constructor(private snippetService: SnippetService, private route: ActivatedRoute) {
   }
 
   ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 
   ngOnInit(): void {
-    this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
-    this.findAllSnippet();
+    this.snippetService.getAllSnippetsByUserId((this.account ? this.account.id.toString() : ''));
   }
 
   trackIdentity(index: number, item: Snippet): any {
     return item.id;
-  }
-
-  public findAllSnippet(): void {
-    this.snippetService
-      .getAllByUserId((this.account ? this.account.id.toString() : ''))
-      .subscribe((res) => {
-        this.snippets = res;
-      });
   }
 }

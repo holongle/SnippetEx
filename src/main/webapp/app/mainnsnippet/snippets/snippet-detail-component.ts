@@ -1,11 +1,9 @@
-import {Component, OnDestroy, OnInit} from "@angular/core";
+import {Component, Input, OnDestroy, OnInit} from "@angular/core";
 import {Snippet} from "app/mainnsnippet/model/snippet.model";
 import {SnippetService} from "app/mainnsnippet/service/snippet.service";
-import {UserService} from "app/core/user/user.service";
 import {Account} from "app/core/user/account.model";
-import {Subscription} from "rxjs";
-import {AccountService} from "app/core/auth/account.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
+import {FormBuilder, Validators} from "@angular/forms";
 
 @Component({
   selector: 'jhi-snippet-detail',
@@ -13,27 +11,51 @@ import {ActivatedRoute} from "@angular/router";
   styleUrls: ['snippet-detail.scss']
 })
 export class SnippetDetailComponent implements OnInit, OnDestroy {
-  public snippets: Snippet[] | null = null;
-  account: Account | null = null;
-  authSubscription?: Subscription;
-  snippetId!: string;
-  snippet: Snippet | null = null;
+  @Input() account: Account | null = null;
+  mode: string | null = null;
+  snippet!: Snippet;
 
+  editForm = this.fb.group({
+    title: ['', [Validators.maxLength(50)]],
+    description: [],
+    content: [],
+  });
 
-  constructor(private route: ActivatedRoute, private snippetService: SnippetService, private userService: UserService, private accountService: AccountService,) {
+  constructor(private route: ActivatedRoute, private router: Router, private snippetService: SnippetService, private fb: FormBuilder) {
   }
 
   ngOnDestroy(): void {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
   }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.findAllSnippet(params['id']);
+      if (this.route.routeConfig && this.route.routeConfig.path === 'new') {
+        this.mode = 'new';
+      }
+      if (params['id']) {
+        this.findAllSnippet(params['id']);
+        this.mode = params['mode'];
+      } else {
+        this.snippet = new Snippet();
+        if (this.account) {
+          this.snippet.userId = this.account.id;
+        }
+      }
     });
-    this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
+  }
+
+  private updateForm(snippet: Snippet): void {
+    this.editForm.patchValue({
+      title: snippet.title,
+      description: snippet.description,
+      content: snippet.content,
+    });
+  }
+
+  private updateSnippet(snippet: Snippet): void {
+    snippet.title = this.editForm.get(['title'])!.value;
+    snippet.description = this.editForm.get(['description'])!.value;
+    snippet.content = this.editForm.get(['content'])!.value;
   }
 
   trackIdentity(index: number, item: Snippet): any {
@@ -45,6 +67,29 @@ export class SnippetDetailComponent implements OnInit, OnDestroy {
       .getById(id)
       .subscribe((res) => {
         this.snippet = res;
+        if (this.snippet) {
+          this.updateForm(this.snippet);
+        }
       });
+  }
+
+  public save(): void {
+    this.updateSnippet(this.snippet);
+    if (this.snippet.id == null) {
+      this.snippetService.create(this.snippet).subscribe(() => this.onSaveSuccess());
+    } else {
+      this.snippetService.update(this.snippet).subscribe(() => this.onSaveSuccess());
+    }
+
+  }
+
+  public delete(): void {
+    if (this.snippet.id != null) {
+      this.snippetService.delete(this.snippet.id.toString()).subscribe(() => this.router.navigateByUrl('/snippet'));
+    }
+  }
+
+  private onSaveSuccess(): void {
+    this.snippetService.getAllSnippetsByUserId(this.account ? this.account.id.toString() : '');
   }
 }
